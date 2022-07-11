@@ -48,7 +48,7 @@ export default {
         method: 'get',
         params: this.$http.adornParams()
       }).then(({data}) => {
-        if (data && data.status === 0) {
+        if (data && data.code === 0) {
           this.linkList = data.result.data
           // console.log(JSON.stringify(this.linkList))
         }

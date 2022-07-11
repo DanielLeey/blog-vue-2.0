@@ -24,7 +24,7 @@
           </iv-formItem>
 
           <iv-formItem label="文章内容：">
-            <mavon-editor ref=md @imgAdd="imgAdd" v-model="article.articleContent" :toolbars="toolbars" @change="mavonChangeHandle"/>
+            <mavon-editor ref=md @imgAdd="imgAdd" v-model="article.content" :toolbars="toolbars" @change="mavonChangeHandle"/>
           </iv-formItem>
 
           <iv-formItem label="文章标签：">
@@ -230,7 +230,7 @@ export default {
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then((data) => {
-        if (data.data.status === 0) {
+        if (data.data.code === 0) {
           this.article.enclosure = data.data.result.msg
           this.$Message.success('封面上传成功')
         }
@@ -246,7 +246,7 @@ export default {
         data: formData,
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then((data) => {
-        if (data.data.status === 0) {
+        if (data.data.code === 0) {
           this.article.thumbnail = data.data.result.msg
           this.$Message.success('封面上传成功')
         }
@@ -260,20 +260,20 @@ export default {
         // eslint-disable-next-line no-unused-vars
         tag += this.countTags[i] + ','
       }
-      this.article.articleTag = tag
-      this.article.managerId = this.$route.params.managerId
+      this.article.articleTags = tag
+      this.article.createBy = this.$route.params.managerId
       let article = this.article
-      article.articleContent = this.contentxt
+      article.content = this.contentxt
       if (article.thumbnail === null || article.thumbnail === '') {
         this.$Message.error('请上传封面')
         return
       } else if (article.title === null || article.title === '') {
         this.$Message.error('请输入文章名称')
         return
-      } else if (article.articleContent === null || article.articleContent === '') {
+      } else if (article.content === null || article.content === '') {
         this.$Message.error('请输入文章内容')
         return
-      } else if (article.articleTag === null || article.articleTag === '') {
+      } else if (article.articleTags === null || article.articleTags === '') {
         this.$Message.error('请输入文章标签')
         return
       }
@@ -285,7 +285,7 @@ export default {
           'Content-Type': 'application/json;charset=utf-8'
         }
       }).then(({data}) => {
-        if (data && data.status === 0) {
+        if (data && data.code === 200) {
           this.$Message.success('发表成功')
           // 关闭当前标签
           this.$emit('closeCurrentTabs')
@@ -299,7 +299,7 @@ export default {
     },
     mavonChangeHandle (context, html) {
       this.contentxt = html
-      this.article.articleContent = marked(html)
+      this.article.content = marked(html)
     }
 
   },

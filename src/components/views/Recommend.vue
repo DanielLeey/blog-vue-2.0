@@ -74,7 +74,7 @@ export default {
         params: this.$http.adornParams(params)
       }).then(({data}) => {
         if (data.data !== null && data.code === 200) {
-          this.recommendList = data.data
+          this.recommendList = data.data.articleLists
         }
       })
     }
