@@ -154,7 +154,7 @@
           data: this.$https.adornDatas(params)
         }).then(({data}) => {
           console.log(JSON.stringify(data))
-          if (data && data.status === 0) {
+          if (data && data.code === 0) {
             this.$Message.success('注册成功，请移步登录页面登录！')
           }else{
             this.$Message.error(data.errorMsg)

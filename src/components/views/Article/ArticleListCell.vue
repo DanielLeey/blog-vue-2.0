@@ -38,7 +38,7 @@
                 <div class="live-down-right">
                   <div class="live-name">
                     <iv-icon type="ios-contact" class="icon" />{{
-                      article.createBy
+                      article.creatorName
                     }}
                   </div>
                   <div class="live-time">

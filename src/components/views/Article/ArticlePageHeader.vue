@@ -11,7 +11,7 @@
       </iv-col>
       <iv-col :xs="24" :sm="14" :md="14" :lg="14" style="padding-left: 0;padding-right: 0;">
         <p class="operate_info">
-          <span><a><iv-icon type="eye"></iv-icon>{{article.articleReadCount}} 阅读</a></span>
+          <span><a><iv-icon type="eye"></iv-icon>{{article.viewCount}} 阅读</a></span>
           <!--<span><a @click="likePost(article)"><iv-icon type="heart"></iv-icon> |收藏</a></span>-->
          <span v-show="manager.id===article.managerId "><router-link :to="{path:'/compile',query:{managerId:manager.id,articleId:article.id}}"><iv-icon type="compose"></iv-icon>编辑</router-link></span>
         </p>

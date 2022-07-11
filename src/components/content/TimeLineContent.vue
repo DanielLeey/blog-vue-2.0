@@ -57,7 +57,7 @@ export default {
         params: this.$http.adornParams(),
         method: 'get'
       }).then(({data}) => {
-        if (data.result.data !== null && data.status === 0) {
+        if (data.result.data !== null && data.code === 0) {
           this.timelineList = data.result.data
         }
       })

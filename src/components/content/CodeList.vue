@@ -61,7 +61,7 @@ export default {
         method: 'get',
         params: this.$http.adornParams(params)
       }).then(({data}) => {
-        if (data.result.data !== null && data.status === 0) {
+        if (data.result.data !== null && data.code === 0) {
           this.articleList = data.result.data.list
           this.total = data.result.data.total
         }

@@ -97,7 +97,7 @@ export default {
         method: 'get',
         params: this.$http.adornParams(params)
       }).then(({data}) => {
-        if (data.result.data !== null && data.status === 0) {
+        if (data.result.data !== null && data.code === 0) {
           this.audio = data.result.data.list
         }
       })

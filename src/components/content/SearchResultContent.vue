@@ -83,7 +83,7 @@ export default {
         method: 'get',
         params: this.$http.adornParams({keywords: this.keywords,currentPage:this.currentPage,pageSize:this.pageSize})
       }).then(({data}) => {
-        if (data && data.status === 0) {
+        if (data && data.code === 0) {
           if(data.result.data!==null){
             this.articleList = data.result.data.pageList
             this.total = data.result.data.totalSize
