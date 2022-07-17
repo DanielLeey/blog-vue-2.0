@@ -16,7 +16,7 @@
               <div class="ivu-col ivu-col-span-15" >
                 <div class="live-info">
                   <div class="live-title" v-html="article.title">{{article.title}}</div>
-                  <div class="live-desc" v-html="article.articleRemark">{{article.articleRemark}}</div>
+                  <div class="live-desc" v-html="article.summary">{{article.summary}}</div>
                 </div>
                 <div class="live-down">
                   <div class="live-down-left" >
@@ -25,7 +25,7 @@
                     </div>
                   </div>
                   <div class="live-down-right">
-                    <div class="live-name"><iv-icon type="ios-contact" class="icon"/>{{article.managerName}}</div>
+                    <div class="live-name"><iv-icon type="ios-contact" class="icon"/>{{article.creatorName}}</div>
                     <div class="live-time"><iv-icon type="ios-timer-outline" class="icon"/>{{article.createTime}}</div>
                   </div>
                 </div>
@@ -69,11 +69,11 @@ export default {
     this.listSearchArticle()
   },
   watch: {
-    '$route.query.keywords':function(val, old) {
+    '$route.query.keywords': function (val, old) {
       if (val !== old) {
         this.listSearchArticle()
       }
-    },
+    }
   },
   methods: {
     listSearchArticle () {
@@ -81,13 +81,13 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/article/search'),
         method: 'get',
-        params: this.$http.adornParams({keywords: this.keywords,currentPage:this.currentPage,pageSize:this.pageSize})
+        params: this.$http.adornParams({keywords: this.keywords, currentPage: this.currentPage, pageSize: this.pageSize})
       }).then(({data}) => {
-        if (data && data.code === 0) {
-          if(data.result.data!==null){
-            this.articleList = data.result.data.pageList
-            this.total = data.result.data.totalSize
-          }else{
+        if (data && data.code === 200) {
+          if (data.data !== null) {
+            this.articleList = data.data.articleLists
+            this.total = data.data.total
+          } else {
             this.articleList = null
             this.total = null
           }
@@ -97,18 +97,19 @@ export default {
 
     changePage (page) {
       this.currentPage = page
-      this.$router.push({path:this.$route.path,query:{
-        latest: true,
-        pageSize: 10,
-        currentPage: this.currentPage
-      }});
+      this.$router.push({path: this.$route.path,
+        query: {
+          latest: true,
+          pageSize: 10,
+          currentPage: this.currentPage
+        }})
       this.listArticle()
     },
     changeSize (size) {
       this.pageSize = size
       this.currentPage = 1
       this.listArticle()
-    },
+    }
   },
   components: {
     'article-page-content': ArticlePageContent,
