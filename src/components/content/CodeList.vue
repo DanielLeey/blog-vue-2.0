@@ -69,18 +69,19 @@ export default {
     },
     changePage (page) {
       this.currentPage = page
-      this.$router.push({path:this.$route.path,query:{
-        latest: true,
-        pageSize: 5,
-        currentPage: this.currentPage
-      }});
+      this.$router.push({path: this.$route.path,
+        query: {
+          latest: true,
+          pageSize: 5,
+          currentPage: this.currentPage
+        }})
       this.listArticle()
     },
     changeSize (size) {
       this.pageSize = size
       this.currentPage = 1
       this.listArticle()
-    },
+    }
 
   },
   components: {

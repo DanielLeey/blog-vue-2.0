@@ -38,7 +38,7 @@
       </li>
      <li  v-show="this.manager.id == null"><router-link to="/login"  class="nav-link contribute" style="margin-right: 0px;color: #E6E61A">登录</router-link></li>
       <li v-show="this.manager.id != null"><router-link :to="{name:'publish',params:{managerId:manager.id}}"  class="nav-link contribute" style="margin-right: 0px;color: dodgerblue"><span class="iconfont icon-wen">发表文章</span></router-link></li>
-   <li v-show="this.manager.id != null"><a class="nav-link contribute iconfont" style="margin-right: 0px;color: dodgerblue" @click="noLogin">注销</a></li>
+   <li v-show="this.manager.id != null"><a class="nav-link contribute iconfont" style="margin-right: 0px;color: dodgerblue" @click="logout">注销</a></li>
     </ul>
     </div>
     </transition>
@@ -67,6 +67,8 @@ export default {
     this.keywords = this.$route.query.keywords
   },
   mounted: function () {
+    // 检查token是否过期
+    this.checkToken()
     let manager = JSON.parse(localStorage.getItem('currentManager'))
     if (manager !== null) {
       this.manager = manager
@@ -84,7 +86,20 @@ export default {
     window.onmousewheel = document.onmousewheel = this.watchScroll
   },
   methods: {
-    noLogin () {
+    checkToken () {
+      this.$http({
+        url: this.$http.adornUrl('/user/check'),
+        method: 'post',
+        data: this.$https.adornDatas(),
+        headers: { 'Content-Type': 'application/json', isToken: true }
+      }).then(({data}) => {
+        console.log(data)
+        if (data.code !== 200) {
+          localStorage.removeItem('currentManager')
+        }
+      })
+    },
+    logout () {
       this.$http({
         url: this.$http.adornUrl('/logout'),
         method: 'post',
