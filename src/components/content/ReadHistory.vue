@@ -3,7 +3,7 @@
     <iv-row>
       <iv-col :xs="24" :sm="24" :md="24" :lg="17">
         <div class="layout-left">
-           <section-title :mainTitle="'技术分享'" :subTitle="'Articles'">
+          <section-title :mainTitle="'浏览历史'" :subTitle="'Articles'">
             <!-- <title-menu-filter @filterByMenu="listArticle"  slot="menu" :menu-filter-list="defaultFilterList"></title-menu-filter> -->
           </section-title>
           <article-list-cell v-for="article in articleList" :article="article" :key="article.id"></article-list-cell>
@@ -45,31 +45,35 @@ export default {
       categoryId: this.$route.params.id,
       menuParams: {},
       noMoreData: false,
-      imgUrl: 'https://file.iviewui.com/asd/live-1.jpg'
+      imgUrl: 'https://file.iviewui.com/asd/live-1.jpg',
+      manager: {}
     }
   },
   created () {
+    let manager = JSON.parse(localStorage.getItem('currentManager'))
+    if (manager !== null) {
+      this.manager = manager
+    } else {
+      this.$router.push('/login')
+    }
     let param = {}
-    param.latest = true
+    param.userId = this.manager.id
     this.listArticle(param)
   },
   methods: {
     listArticle (param) {
-      let orderBy = {
-        articleType: 1001,
-        pageSize: this.pageSize,
-        currentPage: this.currentPage
-      }
-      let params = merge(param, orderBy)
+      // if (param.userId === null) {
+      //  this.$router.push('/login')
+      // }
       // params = merge(params, this.menuParams)
       this.$http({
-        url: this.$http.adornUrl('/article/list'),
+        url: this.$http.adornUrl('/user/readHistory/list'),
         method: 'get',
-        params: this.$http.adornParams(params)
+        params: this.$http.adornParams(param)
       }).then(({data}) => {
-        if (data.result.data !== null && data.code === 0) {
-          this.articleList = data.result.data.list
-          this.total = data.result.data.total
+        if (data && data.code === 200) {
+          this.articleList = data.data
+          this.total = data.data.size
         }
       })
     },

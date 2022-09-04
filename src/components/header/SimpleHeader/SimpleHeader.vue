@@ -18,7 +18,7 @@
       <li><router-link to="/codes" class="nav-link contribute" ><span class="iconfont icon-fenxiang">源码分享</span></router-link></li>
       <li><router-link to="/life" class="nav-link contribute" ><span class="iconfont icon-erjiji">程序人生</span></router-link></li>
       <li><router-link to="/timeline" class="nav-link contribute" ><span class="iconfont icon-shijian">时间轴</span></router-link></li>
-      <li><router-link to="/article/1" class="nav-link contribute" ><span class="iconfont icon-xiaobaicai">关于菜逼博主</span></router-link></li>
+      <li><router-link to="/readHistory" class="nav-link contribute" ><span class="iconfont icon-xiaobaicai">浏览历史</span></router-link></li>
 
       <li >
         <!-- <form id="search-form" action="/articles/search"> -->
@@ -93,7 +93,6 @@ export default {
         data: this.$https.adornDatas(),
         headers: { 'Content-Type': 'application/json', isToken: true }
       }).then(({data}) => {
-        console.log(data)
         if (data.code !== 200) {
           localStorage.removeItem('currentManager')
         }
@@ -103,11 +102,10 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/logout'),
         method: 'post',
-        data: this.$https.adornDatas()
+        data: this.$https.adornDatas(),
+        headers: { 'Content-Type': 'application/json', isToken: true }
       }).then(({data}) => {
-        if (data.code !== 200) {
-          this.$Message.error(data.msg)
-        } else {
+        if (data && data.code === 200) {
           removeToken()
           localStorage.removeItem('currentManager')
           this.$Message.success('已退出登录')
@@ -115,7 +113,11 @@ export default {
           window.location.reload()
           this.$router.push({ path: '/' })
           // this.$router.go(-1)
+        } else {
+          this.$Message.error(data.msg)
         }
+      }).catch((err) => {
+        console.log(err)
       })
     },
     submit (keywords) {
