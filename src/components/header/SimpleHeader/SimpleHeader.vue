@@ -18,7 +18,7 @@
       <li><router-link to="/codes" class="nav-link contribute" ><span class="iconfont icon-fenxiang">源码分享</span></router-link></li>
       <li><router-link to="/life" class="nav-link contribute" ><span class="iconfont icon-erjiji">程序人生</span></router-link></li>
       <li><router-link to="/timeline" class="nav-link contribute" ><span class="iconfont icon-shijian">时间轴</span></router-link></li>
-      <li><router-link to="/article/1" class="nav-link contribute" ><span class="iconfont icon-xiaobaicai">关于菜逼博主</span></router-link></li>
+      <li><router-link to="/readHistory" class="nav-link contribute" ><span class="iconfont icon-xiaobaicai">浏览历史</span></router-link></li>
 
       <li >
         <!-- <form id="search-form" action="/articles/search"> -->
@@ -38,7 +38,7 @@
       </li>
      <li  v-show="this.manager.id == null"><router-link to="/login"  class="nav-link contribute" style="margin-right: 0px;color: #E6E61A">登录</router-link></li>
       <li v-show="this.manager.id != null"><router-link :to="{name:'publish',params:{managerId:manager.id}}"  class="nav-link contribute" style="margin-right: 0px;color: dodgerblue"><span class="iconfont icon-wen">发表文章</span></router-link></li>
-   <li v-show="this.manager.id != null"><a class="nav-link contribute iconfont" style="margin-right: 0px;color: dodgerblue" @click="noLogin">注销</a></li>
+   <li v-show="this.manager.id != null"><a class="nav-link contribute iconfont" style="margin-right: 0px;color: dodgerblue" @click="logout">注销</a></li>
     </ul>
     </div>
     </transition>
@@ -67,6 +67,8 @@ export default {
     this.keywords = this.$route.query.keywords
   },
   mounted: function () {
+    // 检查token是否过期
+    this.checkToken()
     let manager = JSON.parse(localStorage.getItem('currentManager'))
     if (manager !== null) {
       this.manager = manager
@@ -84,15 +86,26 @@ export default {
     window.onmousewheel = document.onmousewheel = this.watchScroll
   },
   methods: {
-    noLogin () {
+    checkToken () {
+      this.$http({
+        url: this.$http.adornUrl('/user/check'),
+        method: 'post',
+        data: this.$https.adornDatas(),
+        headers: { 'Content-Type': 'application/json', isToken: true }
+      }).then(({data}) => {
+        if (data.code !== 200) {
+          localStorage.removeItem('currentManager')
+        }
+      })
+    },
+    logout () {
       this.$http({
         url: this.$http.adornUrl('/logout'),
         method: 'post',
-        data: this.$https.adornDatas()
+        data: this.$https.adornDatas(),
+        headers: { 'Content-Type': 'application/json', isToken: true }
       }).then(({data}) => {
-        if (data.code !== 200) {
-          this.$Message.error(data.msg)
-        } else {
+        if (data && data.code === 200) {
           removeToken()
           localStorage.removeItem('currentManager')
           this.$Message.success('已退出登录')
@@ -100,7 +113,11 @@ export default {
           window.location.reload()
           this.$router.push({ path: '/' })
           // this.$router.go(-1)
+        } else {
+          this.$Message.error(data.msg)
         }
+      }).catch((err) => {
+        console.log(err)
       })
     },
     submit (keywords) {

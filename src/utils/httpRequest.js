@@ -51,10 +51,10 @@ http.adornData = (data = {}, openDefaultdata = true, contentType = 'json') => {
 // request拦截器
 http.interceptors.request.use(config => {
   // 是否需要设置 token
-  // 登录 config.headers.isToken 设置为false => isToken = true => getToken() && !isToken  ==  undefined && false => false
-  // 退出 config.headers.isToken undefined/true  => isToken = false => getToken() && !isToken  ==  value && true => true
-  const isToken = (config.headers || {}).isToken === false
-  if (getToken() && !isToken) {
+  // 登录 config.headers.isToken 设置为undefined/false => isToken = false => getToken() && !isToken  ==  undefined && false => false
+  // 退出 config.headers.isToken true  => isToken = true => getToken() && isToken  ==  value && true => true
+  const isToken = (config.headers || {}).isToken === true
+  if (getToken() && isToken) {
     config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
   // get请求映射params参数

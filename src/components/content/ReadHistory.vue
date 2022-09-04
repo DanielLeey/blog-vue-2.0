@@ -3,7 +3,7 @@
     <iv-row>
       <iv-col :xs="24" :sm="24" :md="24" :lg="17">
         <div class="layout-left">
-          <section-title :mainTitle="'源码分享'" :subTitle="'Code'">
+          <section-title :mainTitle="'浏览历史'" :subTitle="'Articles'">
             <!-- <title-menu-filter @filterByMenu="listArticle"  slot="menu" :menu-filter-list="defaultFilterList"></title-menu-filter> -->
           </section-title>
           <article-list-cell v-for="article in articleList" :article="article" :key="article.id"></article-list-cell>
@@ -21,59 +21,72 @@
 </template>
 
 <script type="text/ecmascript-6">
-import ArticleListHeader from '@/components/views/Article/ArticleListHeader'
-import ArticlePageContent from '@/components/views/Article/ArticlePageContent'
-import ArticlePageFooter from '@/components/views/Article/ArticlePageFooter'
-import ArticleListCell from '@/components/views/Article/ArticleListCell'
 import Recommend from '@/components/views/Recommend'
 import TagWall from '@/components/views/TagWall'
+import ArticleListHeader from '@/components/views/Article/ArticleListHeader'
+import ArticleListCell from '@/components/views/Article/ArticleListCell'
 import SectionTitle from '@/components/views/SectionTitle/SectionTitle'
 import TitleMenuFilter from '@/components/views/SectionTitle/TitleMenuFilter'
-import merge from 'lodash/merge'
+import merge from 'lodash/merge' // 合并对象工具
 import {DefaultFilterList} from '@/common/js/const'
 
 export default {
   data () {
     return {
       articleList: [],
-      categoryList: [],
+      countTags: ['Java', 'Vue'],
+      tagsColor: ['#D52BB3', '#E6E61A', '#3CC48D'],
+      categoryList: ['java', 'hahah'],
+      defaultFilterList: DefaultFilterList,
       currentPage: 1,
       pageSize: 5,
+      articleType: 1001,
+      total: 1,
       categoryId: this.$route.params.id,
-      defaultFilterList: DefaultFilterList
+      menuParams: {},
+      noMoreData: false,
+      imgUrl: 'https://file.iviewui.com/asd/live-1.jpg',
+      manager: {}
     }
   },
   created () {
+    let manager = JSON.parse(localStorage.getItem('currentManager'))
+    if (manager !== null) {
+      this.manager = manager
+    } else {
+      this.$router.push('/login')
+    }
     let param = {}
-    param.latest = true
+    param.userId = this.manager.id
     this.listArticle(param)
   },
   methods: {
     listArticle (param) {
-      let orderBy = {
-        articleType: 1002,
-        pageSize: this.pageSize,
-        currentPage: this.currentPage
-      }
-      let params = merge(param, orderBy)
+      // if (param.userId === null) {
+      //  this.$router.push('/login')
+      // }
+      // params = merge(params, this.menuParams)
       this.$http({
-        url: this.$http.adornUrl('/article/list'),
+        url: this.$http.adornUrl('/user/readHistory/list'),
         method: 'get',
-        params: this.$http.adornParams(params)
+        params: this.$http.adornParams(param)
       }).then(({data}) => {
-        if (data.result.data !== null && data.code === 0) {
-          this.articleList = data.result.data.list
-          this.total = data.result.data.total
+        if (data && data.code === 200) {
+          this.articleList = data.data
+          this.total = data.data.size
         }
       })
+    },
+    getTagsColor (index) {
+      return this.tagsColor[index]
     },
     changePage (page) {
       this.currentPage = page
       this.$router.push({path: this.$route.path,
         query: {
-          latest: true,
-          pageSize: 5,
-          currentPage: this.currentPage
+          latest: true,
+          pageSize: 5,
+          currentPage: this.currentPage
         }})
       this.listArticle()
     },
@@ -82,15 +95,12 @@ export default {
       this.currentPage = 1
       this.listArticle()
     }
-
   },
   components: {
-    'article-list-header': ArticleListHeader,
-    'article-page-content': ArticlePageContent,
-    'article-page-footer': ArticlePageFooter,
-    'article-list-cell': ArticleListCell,
     'recommend': Recommend,
     'tag-wall': TagWall,
+    'article-list-header': ArticleListHeader,
+    'article-list-cell': ArticleListCell,
     'section-title': SectionTitle,
     'title-menu-filter': TitleMenuFilter
   }
@@ -121,4 +131,7 @@ export default {
         padding 0 10px
       @media screen and (min-width: 1200px)
         padding 0 10px
+  /*.live-bg{
+    background-image:url({{this.imgUrl}})
+  }*/
 </style>

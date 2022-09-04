@@ -35,7 +35,7 @@ export default {
     return {
       articleList: [],
       countTags: ['Java', 'Vue'],
-      tagsColor: ['#D52BB3','#E6E61A','#3CC48D'],
+      tagsColor: ['#D52BB3', '#E6E61A', '#3CC48D'],
       categoryList: ['java', 'hahah'],
       defaultFilterList: DefaultFilterList,
       currentPage: 1,
@@ -78,18 +78,19 @@ export default {
     },
     changePage (page) {
       this.currentPage = page
-      this.$router.push({path:this.$route.path,query:{
-        latest: true,
-        pageSize: 5,
-        currentPage: this.currentPage
-      }});
+      this.$router.push({path: this.$route.path,
+        query: {
+          latest: true,
+          pageSize: 5,
+          currentPage: this.currentPage
+        }})
       this.listArticle()
     },
     changeSize (size) {
       this.pageSize = size
       this.currentPage = 1
       this.listArticle()
-    },
+    }
   },
   components: {
     'recommend': Recommend,

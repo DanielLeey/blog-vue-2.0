@@ -125,7 +125,9 @@ export default {
   },
   created: function () {
     this.article = {}
+    // 点击文章查看文章内容
     this.getArticle(this.$route.params.articleId)
+    // 获取对应文章的评论
     this.showCommentById(this.$route.params.articleId)
     // this.refreshDiectory()
     // this.refreshMobileDirectory()
@@ -156,9 +158,12 @@ export default {
       })
     },
     getArticle (articleId) {
+      // 未登录时不需要带token；已登录需要带token，Token是用于添加浏览记录
+      let flag = !!localStorage.getItem('currentManager')
       this.$http({
         url: this.$http.adornUrl('/article/' + articleId),
-        method: 'get'
+        method: 'get',
+        headers: { 'Content-Type': 'application/json', isToken: flag }
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.article = data.data

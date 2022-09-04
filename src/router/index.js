@@ -15,6 +15,7 @@ import ArticleList from '@/components/content/ArticleList'
 import CodeList from '@/components/content/CodeList'
 import LifeList from '@/components/content/LifeList'
 import TimeLineContent from '@/components/content/TimeLineContent'
+import ReadHistory from '@/components/content/ReadHistory'
 import page404 from '@/components/views/404/page404'
 import SearchResultContent from '@/components/content/SearchResultContent'
 import EditTextContent from '@/components/content/EditTextContent'
@@ -156,6 +157,15 @@ const router = new Router({
           components: {
             header: SimpleHeader,
             content: TimeLineContent,
+            footer: CommonFooter
+          }
+        },
+        {
+          path: '/readHistory',
+          name: 'readHistory',
+          components: {
+            header: SimpleHeader,
+            content: ReadHistory,
             footer: CommonFooter
           }
         }
